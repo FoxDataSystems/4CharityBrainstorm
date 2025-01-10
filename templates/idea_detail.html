@@ -98,42 +98,65 @@
                 </button>
             </form>
 
-            <!-- Existing comments rendering code remains the same but with updated classes -->
             {% macro render_comment_thread(comment_data, level=0) %}
-            <div class="comment-thread" style="margin-left: {{ level * 20 }}px;">
-                <div class="comment" id="comment-{{ comment_data.comment.id }}">
-                    <div class="comment-content">{{ comment_data.comment.content }}</div>
-                    <div class="comment-metadata">
-                        <span class="comment-author">{{ comment_data.comment.user.username }}</span>
-                        <span class="comment-date">{{ comment_data.comment.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            <div class="comment-thread" style="margin-left: {{ level * 24 }}px;">
+                <div class="comment bg-white p-4 rounded-xl border border-gray-100 mb-4" id="comment-{{ comment_data.comment.id }}">
+                    <div class="comment-content text-gray-700 text-sm">{{ comment_data.comment.content }}</div>
+                    <div class="comment-metadata mt-2 flex items-center gap-4 text-xs">
+                        <span class="text-gray-900 font-medium">{{ comment_data.comment.user.username }}</span>
+                        <span class="text-gray-500">{{ comment_data.comment.created_at.strftime('%b %d, %Y') }}</span>
                         
-                        <button class="like-button {% if comment_data.comment.likes.filter_by(user_id=current_user.id).first() %}liked{% endif %}"
+                        <button class="like-button flex items-center gap-1 text-gray-500 hover:text-blue-500 transition-colors {% if comment_data.comment.likes.filter_by(user_id=current_user.id).first() %}text-blue-500{% endif %}"
                                 onclick="toggleLike({{ comment_data.comment.id }})">
-                            <i class="fas fa-dollar-sign {% if comment_data.comment.likes.filter_by(user_id=current_user.id).first() %}fas{% else %}far{% endif %}"></i>
+                            <i class="fas fa-dollar-sign text-xs {% if comment_data.comment.likes.filter_by(user_id=current_user.id).first() %}fas{% else %}far{% endif %}"></i>
                             <span class="like-count">{{ comment_data.comment.likes.count() }}</span>
                         </button>
                         
-                        <button class="reply-button" onclick="toggleReplyForm({{ comment_data.comment.id }})">Reply</button>
+                        <button class="reply-button text-gray-500 hover:text-blue-500 transition-colors" 
+                                onclick="toggleReplyForm({{ comment_data.comment.id }})">
+                            Reply
+                        </button>
                         
                         {% if current_user.id == comment_data.comment.user_id %}
-                        <button class="edit-button" onclick="toggleEditForm({{ comment_data.comment.id }})">Edit</button>
-                        <button class="delete-button" onclick="deleteComment({{ comment_data.comment.id }})">Delete</button>
+                        <button class="edit-button text-gray-500 hover:text-blue-500 transition-colors" 
+                                onclick="toggleEditForm({{ comment_data.comment.id }})">
+                            Edit
+                        </button>
+                        <button class="delete-button text-gray-500 hover:text-red-500 transition-colors" 
+                                onclick="deleteComment({{ comment_data.comment.id }})">
+                            Delete
+                        </button>
                         {% endif %}
                     </div>
 
-                    <div id="edit-form-{{ comment_data.comment.id }}" class="edit-form" style="display: none;">
-                        <textarea>{{ comment_data.comment.content }}</textarea>
-                        <div class="edit-actions">
-                            <button onclick="submitEdit({{ comment_data.comment.id }})">Save</button>
-                            <button onclick="toggleEditForm({{ comment_data.comment.id }})" class="cancel-button">Cancel</button>
+                    <div id="edit-form-{{ comment_data.comment.id }}" class="edit-form mt-3" style="display: none;">
+                        <textarea class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-0 resize-none"
+                                  rows="3">{{ comment_data.comment.content }}</textarea>
+                        <div class="edit-actions mt-2 flex gap-2">
+                            <button onclick="submitEdit({{ comment_data.comment.id }})"
+                                    class="px-3 py-1.5 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                Save
+                            </button>
+                            <button onclick="toggleEditForm({{ comment_data.comment.id }})" 
+                                    class="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                                Cancel
+                            </button>
                         </div>
                     </div>
 
-                    <div id="reply-form-{{ comment_data.comment.id }}" class="reply-form" style="display: none;">
-                        <textarea placeholder="Write your reply..."></textarea>
-                        <div class="reply-actions">
-                            <button onclick="submitReply({{ idea.id }}, {{ comment_data.comment.id }})">Submit</button>
-                            <button onclick="toggleReplyForm({{ comment_data.comment.id }})" class="cancel-button">Cancel</button>
+                    <div id="reply-form-{{ comment_data.comment.id }}" class="reply-form mt-3" style="display: none;">
+                        <textarea placeholder="Write your reply..." 
+                                  class="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-0 resize-none"
+                                  rows="3"></textarea>
+                        <div class="reply-actions mt-2 flex gap-2">
+                            <button onclick="submitReply({{ idea.id }}, {{ comment_data.comment.id }})"
+                                    class="px-3 py-1.5 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                Submit
+                            </button>
+                            <button onclick="toggleReplyForm({{ comment_data.comment.id }})" 
+                                    class="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -144,9 +167,11 @@
             </div>
             {% endmacro %}
 
-            {% for comment_data in root_comments %}
-                {{ render_comment_thread(comment_data) }}
-            {% endfor %}
+            <div class="space-y-2">
+                {% for comment_data in root_comments %}
+                    {{ render_comment_thread(comment_data) }}
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
