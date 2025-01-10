@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="terminal-container">
+    <div class="terminal-header">
+        <div class="terminal-buttons">
+            <span class="terminal-button red"></span>
+            <span class="terminal-button yellow"></span>
+            <span class="terminal-button green"></span>
+        </div>
+        <div class="terminal-title">4Freedom_Register.sh</div>
+    </div>
+    
+    <div class="terminal-content">
+        <div class="login-prompt">
+            <span class="prompt-symbol">$</span> Initializing secure registration sequence...
+        </div>
+        
+        <form method="POST" action="{{ url_for('register') }}" class="login-form">
+            <div class="input-line">
+                <span class="prompt-symbol">></span>
+                <input type="text" name="username" placeholder="username" required autocomplete="off">
+            </div>
+            
+            <div class="input-line">
+                <span class="prompt-symbol">></span>
+                <input type="password" name="password" placeholder="password" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="terminal-btn">REGISTER</button>
+                <a href="{{ url_for('login') }}" class="terminal-btn">BACK_TO_LOGIN</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="idea-form-container">
+    <div class="idea-form">
+        <h2>Create New Idea</h2>
+        <p class="form-subtitle">Share your innovative idea with the community</p>
+        
+        <form method="POST" action="{{ url_for('add_idea') }}" enctype="multipart/form-data">
+            <div class="idea-form-group">
+                <label for="category">Category</label>
+                <select name="category_id" id="category" required>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="idea-form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" placeholder="Enter your idea title" required>
+            </div>
+
+            <div class="idea-form-group">
+                <label for="content">Description</label>
+                <textarea id="content" name="content" placeholder="Describe your idea in detail" rows="5" required></textarea>
+            </div>
+
+            <div class="idea-form-group">
+                <label for="image">Add Image</label>
+                <div class="file-input">
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
+            </div>
+
+            <button type="submit">Create Idea</button>
+        </form>
+    </div>
+</div>
+{% endblock %} 

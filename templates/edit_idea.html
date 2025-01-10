@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="idea-form glass-card">
+    <h2>Edit Idea</h2>
+    <form method="POST" action="{{ url_for('edit_idea', idea_id=idea.id) }}" enctype="multipart/form-data">
+        <select name="category_id" required>
+            {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id == idea.category_id %}selected{% endif %}>
+                {{ category.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <input type="text" name="title" placeholder="Idea Title" value="{{ idea.title }}" required>
+        <textarea name="content" placeholder="Idea Content" rows="5" required>{{ idea.content }}</textarea>
+        
+        {% if idea.image_path %}
+        <div class="current-image">
+            <p>Current Image:</p>
+            <img src="{{ url_for('static', filename=idea.image_path) }}" alt="Current image" style="max-width: 200px;">
+        </div>
+        {% endif %}
+        
+        <div class="file-input">
+            <input type="file" name="image" accept="image/*">
+            <small>Upload new image (optional)</small>
+        </div>
+
+        <button type="submit">Save Changes</button>
+        <a href="{{ url_for('idea_detail', idea_id=idea.id) }}" class="button secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %} 

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="category-filter">
+    <select id="categoryFilter" onchange="filterIdeas()">
+        <option value="all">All Categories</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+{% for month, month_ideas in ideas_by_month.items() %}
+<div class="month-section">
+    <h2 class="month-header">{{ month }}</h2>
+    <div class="idea-grid">
+        {% for idea in month_ideas %}
+        <div class="idea-card idea-preview" data-category="{{ idea.category_id }}" onclick="window.location.href='{{ url_for('idea_detail', idea_id=idea.id) }}'">
+            <h3>{{ idea.title }}</h3>
+            {% if idea.image_path %}
+            <img src="{{ url_for('static', filename=idea.image_path) }}" class="idea-image">
+            {% endif %}
+            <p>{{ idea.content[:100] }}...</p>
+            <small>
+                Category: {{ idea.category.name }} | 
+                By {{ idea.author.username }} | 
+                {{ idea.created_at.strftime('%Y-%m-%d') }}
+            </small>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+<script>
+function filterIdeas() {
+    const category = document.getElementById('categoryFilter').value;
+    const ideas = document.querySelectorAll('.idea-preview');
+    
+    ideas.forEach(idea => {
+        if (category === 'all' || idea.dataset.category === category) {
+            idea.style.display = 'block';
+        } else {
+            idea.style.display = 'none';
+        }
+    });
+
+    // Hide month headers if all ideas in that month are hidden
+    document.querySelectorAll('.month-section').forEach(section => {
+        const visibleIdeas = section.querySelectorAll('.idea-preview[style="display: block"]').length;
+        section.style.display = visibleIdeas > 0 ? 'block' : 'none';
+    });
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>4Freedom Ideaspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-tabs">
+            <div class="brand">
+                <i class="fas fa-dollar-sign"></i>
+                <span>4Freedom Ideaspace</span>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}"><i class="fas fa-money-bill-wave"></i> Explore</a>
+                <a href="{{ url_for('add_idea') }}"><i class="fas fa-lightbulb"></i> New Idea</a>
+            </div>
+            <div class="user-nav">
+                {% if current_user.is_authenticated %}
+                    <span><i class="fas fa-user"></i> {{ current_user.username }}</span>
+                    <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html> 

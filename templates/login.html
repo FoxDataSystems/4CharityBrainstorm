@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-container">
+    <h2 class="login-title">Login to 4Freedom Ideaspace</h2>
+    <form method="POST" action="{{ url_for('login') }}" class="login-form">
+        <div class="input-line">
+            <input type="text" name="username" placeholder="Username" required autocomplete="off">
+        </div>
+        
+        <div class="input-line">
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="login-btn">Login</button>
+            <a href="{{ url_for('register') }}" class="register-btn">Create Account</a>
+        </div>
+    </form>
+</div>
+{% endblock %} 
