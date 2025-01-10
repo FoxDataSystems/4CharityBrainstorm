@@ -1,55 +1,149 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="category-filter">
-    <select id="categoryFilter" onchange="filterIdeas()">
-        <option value="all">All Categories</option>
-        {% for category in categories %}
-        <option value="{{ category.id }}">{{ category.name }}</option>
-        {% endfor %}
-    </select>
-</div>
+<div class="bg-gray-50 min-h-screen pb-16">
+    <!-- iOS-style header -->
+    <div class="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-gray-200">
+        <div class="px-4 py-3 max-w-lg mx-auto">
+            <select id="categoryFilter" 
+                    onchange="filterIdeas()"
+                    class="w-full px-4 py-2.5 text-base bg-gray-100 rounded-xl border-none focus:ring-0">
+                <option value="all">All Ideas</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
 
-{% for month, month_ideas in ideas_by_month.items() %}
-<div class="month-section">
-    <h2 class="month-header">{{ month }}</h2>
-    <div class="idea-grid">
-        {% for idea in month_ideas %}
-        <div class="idea-card idea-preview" data-category="{{ idea.category_id }}" onclick="window.location.href='{{ url_for('idea_detail', idea_id=idea.id) }}'">
-            <h3>{{ idea.title }}</h3>
-            {% if idea.image_path %}
-            <img src="{{ url_for('static', filename=idea.image_path) }}" class="idea-image">
-            {% endif %}
-            <p>{{ idea.content[:100] }}...</p>
-            <small>
-                Category: {{ idea.category.name }} | 
-                By {{ idea.author.username }} | 
-                {{ idea.created_at.strftime('%Y-%m-%d') }}
-            </small>
+    <!-- iOS-style content -->
+    <div class="max-w-lg mx-auto px-4">
+        {% for month, month_ideas in ideas_by_month.items() %}
+        <div class="month-section mt-6">
+            <!-- iOS-style section header -->
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 px-1">
+                {{ month }}
+            </h2>
+
+            <!-- iOS-style cards with more separation -->
+            <div class="space-y-6">
+                {% for idea in month_ideas %}
+                <div class="idea-preview bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100"
+                     data-category="{{ idea.category_id }}"
+                     onclick="window.location.href='{{ url_for('idea_detail', idea_id=idea.id) }}'"
+                     role="button"
+                     tabindex="0">
+                    
+                    {% if idea.image_path %}
+                    <div class="relative">
+                        <img src="{{ url_for('static', filename=idea.image_path) }}" 
+                             alt="{{ idea.title }}"
+                             class="w-full h-48 object-cover">
+                        <!-- iOS-style category badge -->
+                        <span class="absolute top-3 left-3 bg-black/50 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-medium">
+                            {{ idea.category.name }}
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    <div class="p-4">
+                        <!-- Author and date -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ idea.author.username }}
+                            </span>
+                            <span class="text-xs text-gray-500">
+                                {{ idea.created_at.strftime('%b %d, %Y') }}
+                            </span>
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                            {{ idea.title }}
+                        </h3>
+                        
+                        <p class="text-gray-500 text-sm mb-3 line-clamp-2">
+                            {{ idea.content[:150] }}...
+                        </p>
+
+                        <!-- iOS-style interaction hints -->
+                        <div class="flex items-center justify-between text-xs text-gray-500 mt-4 pt-3 border-t border-gray-100">
+                            <div class="flex items-center">
+                                {% if not idea.image_path %}
+                                <span class="bg-blue-100 text-blue-800 px-2.5 py-1.5 rounded-full font-medium">
+                                    {{ idea.category.name }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            <span class="text-blue-500">
+                                View Details
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
         {% endfor %}
+
+        <!-- iOS-style empty state -->
+        <div id="noResults" class="hidden py-12 text-center">
+            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-xl">🔍</span>
+            </div>
+            <h3 class="text-base font-medium text-gray-900">No Ideas Found</h3>
+            <p class="text-sm text-gray-500 mt-1">Try selecting a different category</p>
+        </div>
     </div>
 </div>
-{% endfor %}
 
 <script>
 function filterIdeas() {
     const category = document.getElementById('categoryFilter').value;
     const ideas = document.querySelectorAll('.idea-preview');
+    let hasVisibleIdeas = false;
     
     ideas.forEach(idea => {
-        if (category === 'all' || idea.dataset.category === category) {
-            idea.style.display = 'block';
+        const ideaCategory = idea.dataset.category;
+        
+        // Use classList instead of style.display
+        if (category === 'all' || ideaCategory === category) {
+            idea.classList.remove('hidden');
+            hasVisibleIdeas = true;
         } else {
-            idea.style.display = 'none';
+            idea.classList.add('hidden');
         }
     });
 
-    // Hide month headers if all ideas in that month are hidden
+    // Update month sections visibility using classList
     document.querySelectorAll('.month-section').forEach(section => {
-        const visibleIdeas = section.querySelectorAll('.idea-preview[style="display: block"]').length;
-        section.style.display = visibleIdeas > 0 ? 'block' : 'none';
+        const visibleIdeas = section.querySelectorAll('.idea-preview:not(.hidden)').length;
+        if (visibleIdeas > 0) {
+            section.classList.remove('hidden');
+        } else {
+            section.classList.add('hidden');
+        }
     });
+
+    // Update no results message using classList
+    const noResults = document.getElementById('noResults');
+    if (hasVisibleIdeas) {
+        noResults.classList.add('hidden');
+    } else {
+        noResults.classList.remove('hidden');
+        noResults.classList.add('flex');
+    }
 }
+
+// iOS-style touch feedback
+document.querySelectorAll('.idea-preview').forEach(card => {
+    card.addEventListener('touchstart', () => {
+        card.style.transform = 'scale(0.98)';
+        card.style.transition = 'transform 0.2s ease';
+    });
+    
+    card.addEventListener('touchend', () => {
+        card.classList.remove('bg-gray-50');
+    });
+});
 </script>
 {% endblock %} 

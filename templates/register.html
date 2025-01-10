@@ -1,37 +1,57 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="terminal-container">
-    <div class="terminal-header">
-        <div class="terminal-buttons">
-            <span class="terminal-button red"></span>
-            <span class="terminal-button yellow"></span>
-            <span class="terminal-button green"></span>
-        </div>
-        <div class="terminal-title">4Freedom_Register.sh</div>
-    </div>
-    
-    <div class="terminal-content">
-        <div class="login-prompt">
-            <span class="prompt-symbol">$</span> Initializing secure registration sequence...
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-gray-900 rounded-lg shadow-xl p-6">
+        <div class="flex items-center space-x-2 border-b border-gray-700 pb-4">
+            <div class="flex space-x-1">
+                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            </div>
+            <div class="text-gray-400 text-sm font-mono">4Freedom_Register.sh</div>
         </div>
         
-        <form method="POST" action="{{ url_for('register') }}" class="login-form">
-            <div class="input-line">
-                <span class="prompt-symbol">></span>
-                <input type="text" name="username" placeholder="username" required autocomplete="off">
+        <div class="space-y-6 text-gray-300 font-mono">
+            <div class="flex items-center">
+                <span class="text-green-400">$</span>
+                <span class="ml-2">Initializing secure registration sequence...</span>
             </div>
             
-            <div class="input-line">
-                <span class="prompt-symbol">></span>
-                <input type="password" name="password" placeholder="password" required>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="terminal-btn">REGISTER</button>
-                <a href="{{ url_for('login') }}" class="terminal-btn">BACK_TO_LOGIN</a>
-            </div>
-        </form>
+            <form method="POST" action="{{ url_for('register') }}" class="space-y-4">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-green-400">></span>
+                        <input type="text" 
+                               name="username" 
+                               placeholder="username" 
+                               required 
+                               autocomplete="off"
+                               class="flex-1 bg-gray-800 border border-gray-700 text-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <span class="text-green-400">></span>
+                        <input type="password" 
+                               name="password" 
+                               placeholder="password" 
+                               required
+                               class="flex-1 bg-gray-800 border border-gray-700 text-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                
+                <div class="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
+                    <button type="submit" 
+                            class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900">
+                        REGISTER
+                    </button>
+                    <a href="{{ url_for('login') }}" 
+                       class="w-full inline-flex justify-center px-4 py-2 border border-gray-600 rounded text-gray-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        BACK_TO_LOGIN
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %} 

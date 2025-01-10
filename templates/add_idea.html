@@ -1,40 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="idea-form-container">
-    <div class="idea-form">
-        <h2>Create New Idea</h2>
-        <p class="form-subtitle">Share your innovative idea with the community</p>
-        
+<div class="min-h-screen bg-gray-50 pb-16">
+    <!-- iOS-style header -->
+    <div class="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-gray-200">
+        <div class="px-4 py-3 max-w-lg mx-auto">
+            <h2 class="text-xl font-semibold text-center">New Idea</h2>
+        </div>
+    </div>
+
+    <div class="max-w-lg mx-auto px-4 pt-6">
         <form method="POST" action="{{ url_for('add_idea') }}" enctype="multipart/form-data">
-            <div class="idea-form-group">
-                <label for="category">Category</label>
-                <select name="category_id" id="category" required>
-                    {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            <!-- iOS-style grouped inputs -->
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
+                <!-- Category Selection -->
+                <div class="px-4 py-3 border-b border-gray-100">
+                    <select name="category_id" 
+                            id="category" 
+                            required
+                            class="w-full text-base text-gray-900 bg-transparent focus:outline-none">
+                        <option value="" disabled selected>Select Category</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <div class="idea-form-group">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title" placeholder="Enter your idea title" required>
-            </div>
+                <!-- Title Input -->
+                <div class="px-4 py-3 border-b border-gray-100">
+                    <input type="text" 
+                           id="title" 
+                           name="title" 
+                           placeholder="Title" 
+                           required
+                           class="w-full text-base text-gray-900 bg-transparent placeholder-gray-500 focus:outline-none">
+                </div>
 
-            <div class="idea-form-group">
-                <label for="content">Description</label>
-                <textarea id="content" name="content" placeholder="Describe your idea in detail" rows="5" required></textarea>
-            </div>
-
-            <div class="idea-form-group">
-                <label for="image">Add Image</label>
-                <div class="file-input">
-                    <input type="file" id="image" name="image" accept="image/*">
+                <!-- Description Input -->
+                <div class="px-4 py-3">
+                    <textarea id="content" 
+                              name="content" 
+                              placeholder="What's your idea about?" 
+                              rows="4" 
+                              required
+                              class="w-full text-base text-gray-900 bg-transparent placeholder-gray-500 focus:outline-none resize-none"></textarea>
                 </div>
             </div>
 
-            <button type="submit">Create Idea</button>
+            <!-- Image Upload - iOS style -->
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
+                <div class="px-4 py-3 flex items-center justify-between">
+                    <span class="text-base text-gray-900">Add Photo</span>
+                    <input type="file" 
+                           id="image" 
+                           name="image" 
+                           accept="image/*"
+                           class="hidden"
+                           onchange="updateFileName(this)">
+                    <label for="image" 
+                           class="text-blue-500 text-base cursor-pointer">
+                        <span id="fileName">Choose</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit Button - iOS style -->
+            <div class="space-y-4 px-4">
+                <button type="submit" 
+                        class="w-full bg-blue-500 text-white font-medium px-4 py-3.5 rounded-2xl active:bg-blue-600 transition-colors text-base">
+                    Create Idea
+                </button>
+                
+                <a href="{{ url_for('index') }}" 
+                   class="block w-full text-center text-blue-500 font-medium px-4 py-3.5 rounded-2xl bg-blue-50 active:bg-blue-100 transition-colors text-base">
+                    Cancel
+                </a>
+            </div>
         </form>
     </div>
 </div>
+
+<script>
+function updateFileName(input) {
+    const fileName = input.files[0] ? 'Change' : 'Choose';
+    document.getElementById('fileName').textContent = fileName;
+}
+</script>
 {% endblock %} 
