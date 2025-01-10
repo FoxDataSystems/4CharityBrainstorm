@@ -433,12 +433,31 @@ def toggle_like(comment_id):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # Handle registration logic here
         username = request.form.get('username')
         password = request.form.get('password')
-        # Add user to the database, etc.
-        return redirect(url_for('login'))  # Redirect to login after registration
-    return render_template('register.html')  # Render the registration template
+        
+        # Check if username already exists
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists')
+            return redirect(url_for('register'))
+        
+        # Create new user
+        new_user = User(
+            username=username,
+            password_hash=generate_password_hash(password)
+        )
+        
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration successful! Please login.')
+            return redirect(url_for('login'))
+        except:
+            db.session.rollback()
+            flash('An error occurred. Please try again.')
+            return redirect(url_for('register'))
+            
+    return render_template('register.html')
 
 if __name__ == "__main__":
     # Remove or comment out the debug-only line
